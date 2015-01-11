@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <link href="../css/mui.min.css" rel="stylesheet"/>
+    <script src="../js/mui.min.js"></script>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+		<a class="mui-icon mui-icon-plus mui-pull-right"></a>
+		<h1 class="mui-title">顾客管理</h1>
+	</header>
+<script>
+	mui.init({
+		subpages:[{
+			url: 'customerList.html',
+			id: 'customerList.html',
+			styles: {
+				top: mui.HEADER_HEIGHT,
+				bottom: mui.FOOTER_HEIGHT
+			}
+		}]
+	});
+</script>
+</body>
+</html>

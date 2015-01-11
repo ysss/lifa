@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <link href="../css/mui.min.css" rel="stylesheet"/>
+    <script src="../js/mui.min.js"></script>
+    <script src="../js/mui.tpl.min.js"></script>
+</head>
+<body>
+	<div id="J_ScrollWrapper" class="mui-content mui-scroll-wrapper">
+		<div class="mui-scroll">
+			<ul id="J_List" class="mui-table-view mui-table-view-chevron"></ul>
+		</div>
+	</div>
+<script type="text/x-handlebars-template" id="J_Tpl">
+{{#list data}}
+<li class="mui-table-view-cell">
+	<a class="mui-navigate-right" href="customerDetail.html" data-id="{{_id}}">
+		<span class="mui-badge mui-badge-success">{{no}}</span>
+		<h5 class="mui-pull-left">{{name}}</h5>
+		<strong class="mui-badge-primary">{{mobile}}</strong>
+	</a>
+</li>
+{{/list}}
+</script>
+<script>
+(function() {
+var Page = {
+	container: '#J_ScrollWrapper',
+	page: 0,
+	STEP: 20,
+	sortData: {
+		sort: {
+			created: -1
+		}
+	},
+	attach: function() {
+		
+	},
+	
+	ready: function() {
+		var customers = plus.storage.getItem(T.KEY_CUSTOMER);
+		if (!customers) {
+			T.get('/db/customer', this.sortData, function(data) {
+				Page.customers = data;
+				Page.append(data.slice(Page.paget++, Page.STEP));
+			});
+		} else {
+			this.customers = mui.parseJSON(customers);
+			this.append(this.customers.slice(Page.page++, Page.STEP));
+		}
+	},
+	
+	append: function(data) {
+		if (data.length < 1) {
+			return;
+		}
+		if (!this.tpl) {
+			this.tpl = Handlebars.compile(mui('#J_Tpl').innerHTML);
+		}
+		this.$list.append(this.tpl(data));
+	},
+	
+	init: function() {
+		this.$list = $('#J_List');
+		this.attach();
+		
+		mui.plusReady(this.ready.bind(this));
+		
+		mui.init({
+			pullRefresh: {
+				container: container,
+				down: {
+					callback: function() {
+						T.get('/db/customer', {
+							content: $.parseJSON($.extend({
+								query: {
+									created: {
+										$gt: Page.customers[0].created
+									}
+								}
+							}, Page.sortData))
+						}, function(data) {
+							if (data.length > 0) {
+								Page.$list.empty();
+								Page.append(data);
+							} else {
+								mui.alert(Page.customers && Page.customers.length ? '已经是最新的了' : '您还没有顾客数据，请先增加');
+							}
+							mui(Page.container).pullRefresh().endPulldownToRefresh();
+						});
+					}
+				},
+				up: {
+					callback: function() {
+						var data = Page.customers.slice(Page.page++, Page.STEP);
+						Page.append(data);
+						this.endPullupToRefresh(data.length < Page.STEP);
+					}
+				}
+			}
+		});
+	}
+};
+
+Page.init();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title></title>
+    <script src="../js/mui.min.js"></script>
+	<script src="../js/md5.js" type="text/javascript" charset="utf-8"></script>
+    <link href="../css/mui.min.css" rel="stylesheet"/>
+    <style type="text/css">
+    h4 {line-height: 2;}
+    .mui-content-padded>form { position: relative; top: 48%; margin-top: 120px;}
+    .copyright{position: absolute; bottom: 0; width: 100%; line-height: 30px; text-align: center;}
+    </style>
+</head>
+<body>
+	<div class="mui-content"><div class="mui-content-padded">
+		<form name="loginForm" action="" method="post">
+			<h4 class="mui-text-center">请先登录</h4>
+			<div class="mui-input-row"><input class="J_Mobile" type="number" step="1" name="mobile" pattern="1\d{10}" required="" placeholder="手机号码" value="" /></div>
+			<div class="mui-input-row"><input type="password" name="password" required="" placeholder="密码" value="" /></div>
+			<button class="mui-btn mui-btn-primary mui-btn-block" type="submit">登 录</button>
+			<div class="mui-text-center"><p class="mui-badge mui-badge-warning">目前不提供注册服务，如需使用请加Q群：<strong>238044322</strong></p></div>
+		</form>
+	</div></div>
+	<p id="J_CopyRight" class="copyright">&copy; chengsekongjian.com</p>
+<script>
+mui.ready(function() {	
+	var form = document.forms.loginForm,
+		$form = $(form),
+		$copyright = $('#J_CopyRight'),
+		DIS = 'disable';
+	$form.on('input', '.J_Mobile', function() {
+		if (this.value.trim().length === 11) {
+			this.blur();
+			form.password.focus();
+		}
+	}).on('focus', 'input', function() {
+		$copyright.hide();
+	}).on('blur', 'input', function() {
+		$copyright.show();
+	}).submit(function(e) {
+		var mobile = this.mobile.value.trim(),
+			password = this.password.value.trim();
+			
+		e.preventDefault();
+		if ($form.attr(DIS)) {
+			return;
+		}
+		if (!/^1\d{10}$/.test(mobile)) {
+			mui.alert('请输入11位的手机号码');
+		} else if (password.length < 6) {
+			mui.alert('密码至少为6位');
+		} else {
+			$form.attr(DIS, DIS).find('button').text('正在登录中...');
+			var data = {
+				mobile: mobile,
+				password: CryptoJS.MD5(password).toString()
+			};
+			
+			T.post('/u/login', data, function(data) {
+				mui.alert(JSON.stringify(data));
+				T.setItemJSON(T.KEY_USER, data);
+				mui.currentWebview.parent().doLogin(data);
+				mui.currentWebview.close();
+			});
+		}
+	});
+});
+</script>
+</body>
+</html>

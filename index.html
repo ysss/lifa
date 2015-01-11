@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title></title>
+    <script src="js/mui.min.js"></script>
+    <link href="css/mui.min.css" rel="stylesheet"/>
+</head>
+<body>
+<script>
+mui.init({
+	swipeBack: false,
+	statusBarBackground:'#f7f7f7'
+});
+var pages = ['page/login.html', 'page/customer.html'];
+mui.plusReady(function() {
+	var self = mui.currentWebview,
+		isLogin = T.isLogin(),
+		page = pages[isLogin ? 1 : 0];
+	mui.os.android && plus.screen.lockOrientation("portrait-primary");
+	self.append(plus.webview.create(page, page));
+	if (isLogin) {
+		window.doLogin = function(data) {
+			self.append(plus.webview.create(pages[1], pages[1]));
+			plus.webview.remove(pages[0]);
+			window.doLogin = null;
+		};
+	}
+});
+function doLogin() {
+	
+}
+mui(function() {
+	
+});
+</script>
+</body>
+</html>
