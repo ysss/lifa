@@ -64,8 +64,8 @@ mui.ready(function() {
 				success: function(data) {
 					T.setItemJSON(T.KEY_USER, data.user);
 					T.setSid(data.sid);
-					plus.webview.currentWebview().parent().doLogin(data);
-					plus.webview.currentWebview().close();
+					plus.webview.currentWebview().parent().evalJS('window.doLogin(' + JSON.stringify(data) + ')');
+					plus.webview.close();
 				},
 				complete: function() {
 					$form.removeAttr(DIS).find('button').text('登 录');
@@ -74,6 +74,9 @@ mui.ready(function() {
 		}
 	});
 });
+mui.plusReady(function() {
+		
+})
 </script>
 </body>
 </html>
