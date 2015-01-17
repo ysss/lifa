@@ -55,17 +55,17 @@ mui.ready(function() {
 			mui.alert('密码至少为6位');
 		} else {
 			$form.attr(DIS, DIS).find('button').text('正在登录中...');
-			
-			T.getData('/u/login', {
+			T.getData('u/login', {
+				type: 'POST',
 				data: {
 					mobile: mobile,
 					password: CryptoJS.MD5(password).toString()
 				},
 				success: function(data) {
-					T.setItemJSON(T.KEY_USER, data);
+					T.setItemJSON(T.KEY_USER, data.user);
 					T.setSid(data.sid);
-					mui.currentWebview.parent().doLogin(data);
-					mui.currentWebview.close();
+					plus.webview.currentWebview().parent().doLogin(data);
+					plus.webview.currentWebview().close();
 				},
 				complete: function() {
 					$form.removeAttr(DIS).find('button').text('登 录');

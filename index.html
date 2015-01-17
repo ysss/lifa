@@ -17,7 +17,7 @@ mui.init({
 });
 var pages = ['page/login.html', 'page/customer.html'];
 mui.plusReady(function() {
-	var self = mui.currentWebview,
+	var self = plus.webview.currentWebview(),
 		isLogin = T.isLogin(),
 		page = pages[isLogin ? 1 : 0];
 	mui.os.android && plus.screen.lockOrientation("portrait-primary");
