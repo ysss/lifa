@@ -23,11 +23,11 @@ mui.plusReady(function() {
 	mui.os.android && plus.screen.lockOrientation("portrait-primary");
 	self.append(plus.webview.create(page, page));
 	if (isLogin) {
-		window.doLogin = function(data) {
+		document.addEventListener('logined', function() {
 			self.append(plus.webview.create(pages[1], pages[1]));
 			plus.webview.remove(pages[0]);
-			window.doLogin = null;
-		};
+			document.removeEventListener('logined');
+		});
 	}
 });
 </script>

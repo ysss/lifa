@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <title></title>
+    <script src="../js/mui.min.js"></script>
+    <script src="../js/mui.tpl.min.js"></script>
+    <link href="../css/mui.min.css" rel="stylesheet"/>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		<h1 class="mui-title">顾客详情</h1>
+	</header>
+	<div class="mui-content">
+		<form name="customerForm" class="mui-input-group">
+		</form>
+	</div>
+<script type="text/x-handlebars-template" id="J_Tpl">
+<div class="mui-input-row">
+	<label>顾客名称：</label>
+	<input type="text" name="name" class="mui-input-clear" placeholder="" value="{{name||''}}">
+</div>
+<div class="mui-input-row">
+	<label>电话号码：</label>
+	<input type="tel" name="mobile" class="mui-input-clear" placeholder="" value="{{mobile||''}}">
+</div>
+<div class="mui-input-row">
+	<label>顾客编号：</label>
+	<input type="text" name="no" class="mui-input-clear" placeholder="您可用于和您线下数据做校对，可不填写" value="{{no||''}}">
+</div>
+<div class="mui-input-row">
+	<label>性别：</label>
+	<label><div class="mui-radio"><input name="sex" type="radio" value="1" {{#if sex}}checked {{/if}}/> 男</div></label>
+	<label><div class="mui-radio"><input name="sex" type="radio" value="0" {{#if !sex}}checked {{/if}}/> 女</div></label>
+</div>
+<div class="mui-input-row">
+	<label>出生年月：</label>
+	<input type="date" class="mui-input-clear" placeholder="" value="{{date}}">
+</div>
+<div class="mui-input-row">
+	<label>是否农历：</label>
+	<div class="mui-switch{{#if isLunar}} mui-active{{/if}}">
+		<div class="mui-switch-handle"></div>
+	</div>
+</div>
+{{#if _id}}<button class="mui-btn mui-btn-primary mui-btn-block" type="submit">修  改</button>{{/if}}
+</script>
+<script>
+mui.init();
+(function(form) {
+	var detail;
+mui.plusReady(function() {
+	var self = plus.webview.currentWebview(),
+		tpl = Handlebars.compile($('#J_Tpl').html());
+		
+	detail = self.detail || {};
+	if (detail.date) {
+		detail.date = new Date(detail.date).format('yyyy/MM/dd');
+	}
+	form.innerHTML = tpl(detail);
+});
+$(form).submit(function() {
+	var data = $(this).serializeObject();
+	data.date = new Date(data.date).getTime();
+	mui.fire(plus.webview.getWebviewById('page/customerList.html'), 'Customer:update', mui.extend(detail, data));
+});
+
+})(document.forms.customerForm);
+</script>
+</body>
+</html>

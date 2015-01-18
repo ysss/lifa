@@ -37,23 +37,43 @@ var Page = {
 		}
 	},
 	attach: function() {
-		
+		this.$list.tap('a', function() {
+			var url = 'page/customerDetail.html',
+				id = this.getAttribute('data-id');
+			mui.openWindow(url, url, {
+				styles: {
+					top: mui.HEIGHT_ZERO,
+					bottom: mui.HEIGHT_ZERO
+				},
+				params: {
+					id: id,
+					detail: Page.customers.filter(function(item) {
+						return item._id === id;
+					})[0]
+				}
+			})
+		});
 	},
 	
 	ready: function() {
 		var customers = plus.storage.getItem(T.KEY_CUSTOMER);
 		if (!customers) {
-			T.get('/db/customer', this.sortData, function(data) {
+			T.get('customer', this.sortData, function(data) {
 				Page.customers = data;
-				Page.append(data.slice(Page.paget++, Page.STEP));
+				Page.append();
 			});
 		} else {
-			this.customers = mui.parseJSON(customers);
-			this.append(this.customers.slice(Page.page++, Page.STEP));
+			this.customers = JSON.parseJSON(customers);
+			this.append();
 		}
 	},
 	
 	append: function(data) {
+		var start = this.STEP * this.page;
+		if (!data) {
+			data = this.customers.slice(start, start + this.STEP);
+			this.page++;
+		}
 		if (data.length < 1) {
 			return;
 		}
@@ -61,6 +81,29 @@ var Page = {
 			this.tpl = Handlebars.compile(mui('#J_Tpl').innerHTML);
 		}
 		this.$list.append(this.tpl(data));
+	},
+	
+	refresh: function(callback) {
+		T.get('customer', {
+			content: $.parseJSON($.extend({
+				query: {
+					created: {
+						$gt: Page.customers[0].created
+					}
+				}
+			}, Page.sortData))
+		}, function(data) {
+			if (data.length > 0) {
+				Page.customers = data.concat(Page.customers);
+				Page.$list.empty();
+				Page.append();
+				// update localstorage
+				T.setItemJSON(T.KEY_CUSTOMER, this.customers);
+			} else {
+				mui.alert(Page.customers && Page.customers.length ? '已经是最新的了' : '您还没有顾客数据，请先增加');
+			}
+			callback && callback(data);
+		});
 	},
 	
 	init: function() {
@@ -71,33 +114,18 @@ var Page = {
 		
 		mui.init({
 			pullRefresh: {
-				container: container,
+				container: this.container,
 				down: {
 					callback: function() {
-						T.get('/db/customer', {
-							content: $.parseJSON($.extend({
-								query: {
-									created: {
-										$gt: Page.customers[0].created
-									}
-								}
-							}, Page.sortData))
-						}, function(data) {
-							if (data.length > 0) {
-								Page.$list.empty();
-								Page.append(data);
-							} else {
-								mui.alert(Page.customers && Page.customers.length ? '已经是最新的了' : '您还没有顾客数据，请先增加');
-							}
-							mui(Page.container).pullRefresh().endPulldownToRefresh();
+						Page.refresh(function() {
+							mui(Page.container).pullRefresh().endPulldownToRefresh();							
 						});
 					}
 				},
 				up: {
 					callback: function() {
-						var data = Page.customers.slice(Page.page++, Page.STEP);
-						Page.append(data);
-						this.endPullupToRefresh(data.length < Page.STEP);
+						Page.append();							
+						this.endPullupToRefresh(this.customers.length > Page.STEP * Page.page);
 					}
 				}
 			}

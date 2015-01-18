@@ -64,8 +64,7 @@ mui.ready(function() {
 				success: function(data) {
 					T.setItemJSON(T.KEY_USER, data.user);
 					T.setSid(data.sid);
-					plus.webview.currentWebview().parent().evalJS('window.doLogin(' + JSON.stringify(data) + ')');
-					plus.webview.close();
+					mui.fire(plus.webview.currentWebview().parent(), 'logined');
 				},
 				complete: function() {
 					$form.removeAttr(DIS).find('button').text('登 录');
