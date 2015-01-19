@@ -9,8 +9,8 @@
 </head>
 <body>
 	<header class="mui-bar mui-bar-nav">
-		<a class="mui-icon mui-icon-bars mui-pull-left"></a>
-		<a class="mui-icon mui-icon-plus mui-pull-right"></a>
+		<a id="J_Menu" class="mui-icon mui-icon-bars mui-pull-left"></a>
+		<a id="J_Add" class="mui-icon mui-icon-plus mui-pull-right"></a>
 		<h1 class="mui-title">顾客管理</h1>
 	</header>
 <script src="../js/page/customer.js" type="text/javascript" charset="utf-8"></script>
@@ -25,6 +25,143 @@
 			}
 		}]
 	});
+	$('#J_Add').tap(function() {
+		var url = 'page/customerDetail.html';
+		mui.openWindow(url, url, {
+			styles: {
+				top: mui.HEIGHT_ZERO,
+				bottom: mui.HEIGHT_ZERO
+			}
+		});
+	});
+	
+	var menu, mask, showMenu;
+	mui.plusReady(function() {
+		if(mui.os.android){
+			plus.screen.lockOrientation("portrait-primary");
+		}
+		//处理侧滑导航，为了避免和子页面初始化等竞争资源，延迟加载侧滑页面；
+		setTimeout(function () {
+			menu= mui.preload({
+				id: 'page/indexMenu.html',
+				url: 'page/indexMenu.html',
+				styles: {
+					left: 0,
+					width: '70%',
+					zindex: -1
+				},
+				show:{
+					aniShow:'none'
+				}
+			});
+			//创建遮罩页面，使用透明webview解决index页面、list页面创建div遮罩不同步的问题；
+			//android 4.0以下版本不支持透明webview，故4.0以下暂不遮罩；
+			if(parseFloat(mui.os.version)>4.0){
+				mask = mui.preload({
+					id:"page/indexMask.html",
+					url:"page/indexMask.html",
+					styles:{
+						left:'70%',
+						width:'30%',
+						zindex:1,
+						opacity:0.1,
+						popGesture:"none"
+					}
+				});
+			}
+			
+		},200);
+	});
+	/**
+	 * 显示侧滑菜单
+	 */
+	function openMenu(){
+		if(!showMenu){
+			//侧滑菜单处于隐藏状态，则立即显示出来；
+			menu.show('none',0,function () {
+				//主窗体开始侧滑；
+				mui.currentWebview.setStyle({
+					left:'70%',
+					transition: {
+						duration: 150
+					}
+				});
+				showMenu = true;
+			});
+			//显示遮罩
+			setTimeout(function () {
+				mask&&(mask.show('none'));	
+			},150);
+		}
+	}
+	/**
+	 * 关闭菜单
+	 */
+	function closeMenu(){
+		if(showMenu){
+			//关闭遮罩；
+			mask&&(mask.hide());
+			//主窗体开始侧滑；
+			mui.currentWebview.setStyle({
+				left: '0',
+				transition: {
+					duration: 200
+				}
+			});
+			showMenu = false;
+			//等动画结束后，隐藏菜单webview，节省资源；
+			setTimeout(function () {
+				menu.hide();
+			},300);	
+		}
+	}
+	//点击左上角侧滑图标，打开侧滑菜单；
+	$('#J_Menu').tap(function () {
+		if(showMenu){
+			closeMenu();
+		}else{
+			openMenu();
+		}
+	});
+	//主界面向右滑动，若菜单未显示，则显示菜单；否则不做任何操作
+	window.addEventListener("swiperight",openMenu);
+	//主界面向左滑动，若菜单已显示，则关闭菜单；否则，不做任何操作；
+	window.addEventListener("swipeleft",closeMenu);
+	//侧滑菜单触发关闭菜单命令
+	window.addEventListener("menu:close",closeMenu);
+	window.addEventListener("menu:open",openMenu);
+	
+	//重写mui.menu方法，Android版本menu按键按下可自动打开、关闭侧滑菜单；
+	mui.menu = function () {
+		if(showMenu){
+			closeMenu();
+		}else{
+			openMenu();
+		}
+	}
+	
+	//首页返回键处理
+	//处理逻辑：1秒内，连续两次按返回键，则退出应用；
+	var first = null;
+	mui.back = function() {
+		if(showMenu){
+			closeMenu();
+		}else{
+			//首次按键，提示‘再按一次退出应用’
+			if (!first) {
+				first = new Date().getTime();
+				mui.toast('再按一次退出应用');
+				setTimeout(function() {
+					first = null;
+				}, 1000);
+			} else {
+				if (new Date().getTime() - first < 1000) {
+					plus.runtime.quit();
+				}
+			}
+		}
+		
+	};
 </script>
 </body>
 </html>

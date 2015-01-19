@@ -32,12 +32,7 @@ mui.ready(function() {
 		$form = $(form),
 		$copyright = $('#J_CopyRight'),
 		DIS = 'disable';
-	$form.on('input', '.J_Mobile', function() {
-		if (this.value.trim().length === 11) {
-			this.blur();
-			form.password.focus();
-		}
-	}).on('focus', 'input', function() {
+	$form.on('focus', 'input', function() {
 		$copyright.hide();
 	}).on('blur', 'input', function() {
 		$copyright.show();
@@ -73,9 +68,6 @@ mui.ready(function() {
 		}
 	});
 });
-mui.plusReady(function() {
-		
-})
 </script>
 </body>
 </html>

@@ -28,7 +28,7 @@
 </div>
 <div class="mui-input-row">
 	<label>顾客编号：</label>
-	<input type="text" name="no" class="mui-input-clear" placeholder="您可用于和您线下数据做校对，可不填写" value="{{no||''}}">
+	<input type="text" name="no" class="mui-input-clear" placeholder="您可用于和线下数据做校对，可不填写" value="{{no||''}}">
 </div>
 <div class="mui-input-row">
 	<label>性别：</label>
@@ -41,11 +41,11 @@
 </div>
 <div class="mui-input-row">
 	<label>是否农历：</label>
-	<div class="mui-switch{{#if isLunar}} mui-active{{/if}}">
+	<div id="J_Lunar" class="mui-switch{{#if isLunar}} mui-active{{/if}}">
 		<div class="mui-switch-handle"></div>
 	</div>
 </div>
-{{#if _id}}<button class="mui-btn mui-btn-primary mui-btn-block" type="submit">修  改</button>{{/if}}
+<button class="mui-btn mui-btn-primary mui-btn-block" type="submit">{{#if _id}}修  改{{#else}}增 加{{/if}}</button>
 </script>
 <script>
 mui.init();
@@ -59,12 +59,15 @@ mui.plusReady(function() {
 	if (detail.date) {
 		detail.date = new Date(detail.date).format('yyyy/MM/dd');
 	}
+	
 	form.innerHTML = tpl(detail);
 });
 $(form).submit(function() {
 	var data = $(this).serializeObject();
 	data.date = new Date(data.date).getTime();
+	detail.isLunar = $('#J_Lunar').hasClass('mui-active');
 	mui.fire(plus.webview.getWebviewById('page/customerList.html'), 'Customer:update', mui.extend(detail, data));
+	plus.webview.currentWebview().close();
 });
 
 })(document.forms.customerForm);
