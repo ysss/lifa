@@ -88,7 +88,7 @@ var Page = {
 			content: $.parseJSON($.extend({
 				query: {
 					created: {
-						$gt: Page.customers[0].created
+						$gt: Page.customers ? Page.customers[0].created : 0
 					}
 				}
 			}, Page.sortData))

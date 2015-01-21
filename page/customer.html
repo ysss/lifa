@@ -26,8 +26,10 @@
 		}]
 	});
 	$('#J_Add').tap(function() {
-		var url = 'page/customerDetail.html';
-		mui.openWindow(url, url, {
+		var url = 'customerDetail.html';
+		mui.openWindow({
+			url: url,
+			id: url,
 			styles: {
 				top: mui.HEIGHT_ZERO,
 				bottom: mui.HEIGHT_ZERO
@@ -41,10 +43,10 @@
 			plus.screen.lockOrientation("portrait-primary");
 		}
 		//处理侧滑导航，为了避免和子页面初始化等竞争资源，延迟加载侧滑页面；
-		setTimeout(function () {
+		setTimeout(function() {
 			menu= mui.preload({
-				id: 'page/indexMenu.html',
-				url: 'page/indexMenu.html',
+				id: 'indexMenu.html',
+				url: 'indexMenu.html',
 				styles: {
 					left: 0,
 					width: '70%',
@@ -58,8 +60,8 @@
 			//android 4.0以下版本不支持透明webview，故4.0以下暂不遮罩；
 			if(parseFloat(mui.os.version)>4.0){
 				mask = mui.preload({
-					id:"page/indexMask.html",
-					url:"page/indexMask.html",
+					id:"indexMask.html",
+					url:"indexMask.html",
 					styles:{
 						left:'70%',
 						width:'30%',
@@ -128,7 +130,7 @@
 	//主界面向左滑动，若菜单已显示，则关闭菜单；否则，不做任何操作；
 	window.addEventListener("swipeleft",closeMenu);
 	//侧滑菜单触发关闭菜单命令
-	window.addEventListener("menu:close",closeMenu);
+	window.addEventListener("menu:close", closeMenu);
 	window.addEventListener("menu:open",openMenu);
 	
 	//重写mui.menu方法，Android版本menu按键按下可自动打开、关闭侧滑菜单；

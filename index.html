@@ -22,7 +22,7 @@ mui.plusReady(function() {
 		page = pages[isLogin ? 1 : 0];
 	mui.os.android && plus.screen.lockOrientation("portrait-primary");
 	self.append(plus.webview.create(page, page));
-	if (isLogin) {
+	if (!isLogin) {
 		document.addEventListener('logined', function() {
 			self.append(plus.webview.create(pages[1], pages[1]));
 			plus.webview.remove(pages[0]);
