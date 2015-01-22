@@ -11,7 +11,7 @@
 <body>
 	<header class="mui-bar mui-bar-nav">
 		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
-		<h1 class="mui-title">顾客详情</h1>
+		<h1 id="J_Title" class="mui-title">顾客详情</h1>
 	</header>
 	<div class="mui-content">
 		<form name="customerForm" class="mui-input-group">
@@ -20,24 +20,24 @@
 <script type="text/x-handlebars-template" id="J_Tpl">
 <div class="mui-input-row">
 	<label>顾客名称：</label>
-	<input type="text" name="name" class="mui-input-clear" placeholder="" value="{{name||''}}">
+	<input type="text" name="name" class="mui-input-clear" placeholder="" value="{{#if name}}{{name}}{{/if}}">
 </div>
 <div class="mui-input-row">
 	<label>电话号码：</label>
-	<input type="tel" name="mobile" class="mui-input-clear" placeholder="" value="{{mobile||''}}">
+	<input type="tel" name="mobile" class="mui-input-clear" placeholder="" value="{{#if mobile}}{{mobile}}{{/if}}">
 </div>
 <div class="mui-input-row">
 	<label>顾客编号：</label>
-	<input type="text" name="no" class="mui-input-clear" placeholder="您可用于和线下数据做校对，可不填写" value="{{no||''}}">
+	<input type="text" name="no" class="mui-input-clear" placeholder="您可用于和线下数据做校对，可不填写" value="{{#if no}}{{no}}{{/if}}">
 </div>
 <div class="mui-input-row">
 	<label>性别：</label>
 	<label><div class="mui-radio"><input name="sex" type="radio" value="1" {{#if sex}}checked {{/if}}/> 男</div></label>
-	<label><div class="mui-radio"><input name="sex" type="radio" value="0" {{#if !sex}}checked {{/if}}/> 女</div></label>
+	<label><div class="mui-radio"><input name="sex" type="radio" value="0" {{#unless sex}}checked {{/if}}/> 女</div></label>
 </div>
 <div class="mui-input-row">
 	<label>出生年月：</label>
-	<input type="date" class="mui-input-clear" placeholder="" value="{{date}}">
+	<input type="date" class="mui-input-clear" placeholder="" value="{{#if date}}{{date}}{{/if}}">
 </div>
 <div class="mui-input-row">
 	<label>是否农历：</label>
@@ -55,6 +55,9 @@ mui.plusReady(function() {
 	var self = plus.webview.currentWebview(),
 		tpl = Handlebars.compile($('#J_Tpl').html());
 		
+	if (!detail._id) {
+		$('#J_Title').text('新增顾客');
+	}
 	detail = self.detail || {};
 	if (detail.date) {
 		detail.date = new Date(detail.date).format('yyyy/MM/dd');
@@ -64,7 +67,9 @@ mui.plusReady(function() {
 });
 $(form).submit(function() {
 	var data = $(this).serializeObject();
-	data.date = new Date(data.date).getTime();
+	if (data.date) {
+		data.date = new Date(data.date).getTime();		
+	}
 	detail.isLunar = $('#J_Lunar').hasClass('mui-active');
 	mui.fire(plus.webview.getWebviewById('page/customerList.html'), 'Customer:update', mui.extend(detail, data));
 	plus.webview.currentWebview().close();
