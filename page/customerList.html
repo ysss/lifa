@@ -26,7 +26,7 @@
 {{/list}}
 </script>
 <script>
-(function() {
+(function(win) {
 var Page = {
 	container: '#J_ScrollWrapper',
 	page: 0,
@@ -52,6 +52,33 @@ var Page = {
 					})[0]
 				}
 			})
+		});
+		win.addEventListener('Customer:update', function(data) {
+			var id = data._id;
+			if (!id) {
+				// add
+				T.post('customer', { content: data }, function() {
+					Page.refresh();
+				});
+			} else {
+				// update
+				delete data._id;
+				T.put('customer', {
+					id: id,
+					content: data
+				}, function() {
+					mui.toast('更新成功');
+				});
+				data._id = id;
+				Page.customers.forEach(function(item, i) {
+					if (item._id === id) {
+						Page.customers[i] = data;
+					}
+				});
+				
+				Page.$list.find('[data-id=' + id + ']').replaceWith(Page.tpl(data));
+				T.setItemJSON(T.KEY_CUSTOMER, Page.customers);
+			}
 		});
 	},
 	
@@ -134,7 +161,7 @@ var Page = {
 };
 
 Page.init();
-})();
+})(windows);
 </script>
 </body>
 </html>

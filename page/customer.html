@@ -78,7 +78,6 @@
 	 * 显示侧滑菜单
 	 */
 	function openMenu(){
-		T.log('openMenu');
 		if(!showMenu){
 			//侧滑菜单处于隐藏状态，则立即显示出来；
 			menu.show('none',0,function () {
@@ -131,8 +130,13 @@
 	//主界面向左滑动，若菜单已显示，则关闭菜单；否则，不做任何操作；
 	window.addEventListener("swipeleft",closeMenu);
 	//侧滑菜单触发关闭菜单命令
-	window.addEventListener("menu:close", closeMenu);
-	window.addEventListener("menu:open",openMenu);
+	window.addEventListener("Menu:close", closeMenu);
+	window.addEventListener("Menu:open",openMenu);
+	
+	window.addEventListener("logout", function() {
+		plus.storage.removeItem(T.KEY_SID);
+		mui.currentWebview.loadURL('../index.html');
+	});
 	
 	//重写mui.menu方法，Android版本menu按键按下可自动打开、关闭侧滑菜单；
 	mui.menu = function () {

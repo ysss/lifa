@@ -1,5 +1,5 @@
 (function(w){
-	var server="http://www.dcloud.io/hellomui/update.json",//获取升级描述文件服务器地址
+	var server="http://lifa.chengsekongjian.com/db/update.json",//获取升级描述文件服务器地址
 	localDir="update",localFile="update.json",//本地保存升级描述目录和文件名
 	keyUpdate="updateCheck",//取消升级键名
 	keyAbort="updateAbort",//忽略版本键名
