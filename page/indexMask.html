@@ -18,7 +18,7 @@
 	var index = null;//主页面
 	function closeMenu () {
 		!index&&(index = mui.currentWebview.opener());
-		mui.fire(index,"menu:close");
+		mui.fire(index,"Menu:close");
 	}
 	window.addEventListener('tap',closeMenu);
 	window.addEventListener('swipeleft',closeMenu);

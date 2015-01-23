@@ -7,6 +7,9 @@
     <script src="../js/mui.min.js"></script>
     <script src="../js/mui.tpl.min.js"></script>
     <link href="../css/mui.min.css" rel="stylesheet"/>
+    <style>
+    	button[type=submit]{margin-top: 20px;}
+    </style>
 </head>
 <body>
 	<header class="mui-bar mui-bar-nav">
@@ -20,24 +23,27 @@
 <script type="text/x-handlebars-template" id="J_Tpl">
 <div class="mui-input-row">
 	<label>顾客名称：</label>
-	<input type="text" name="name" class="mui-input-clear" placeholder="" value="{{#if name}}{{name}}{{/if}}">
+	<input type="text" name="name" class="mui-input-clear" required="" placeholder="必填" value="{{#if name}}{{name}}{{/if}}">
 </div>
 <div class="mui-input-row">
 	<label>电话号码：</label>
-	<input type="tel" name="mobile" class="mui-input-clear" placeholder="" value="{{#if mobile}}{{mobile}}{{/if}}">
+	<input type="tel" name="mobile" class="mui-input-clear" required="" placeholder="必填" value="{{#if mobile}}{{mobile}}{{/if}}">
 </div>
 <div class="mui-input-row">
 	<label>顾客编号：</label>
-	<input type="text" name="no" class="mui-input-clear" placeholder="您可用于和线下数据做校对，可不填写" value="{{#if no}}{{no}}{{/if}}">
+	<input type="text" name="no" class="mui-input-clear" placeholder="用于线下数据做校对，选填" value="{{#if no}}{{no}}{{/if}}">
 </div>
-<div class="mui-input-row">
-	<label>性别：</label>
-	<label><div class="mui-radio"><input name="sex" type="radio" value="1" {{#if sex}}checked {{/if}}/> 男</div></label>
-	<label><div class="mui-radio"><input name="sex" type="radio" value="0" {{#unless sex}}checked {{/if}}/> 女</div></label>
+<div class="mui-input-row mui-radio">
+	<label>男</label>
+	<input name="sex" type="radio" value="1" {{#if sex}}checked {{/if}}/> 男
+</div>
+<div class="mui-input-row mui-radio">
+	<label>女</label>
+	<input name="sex" type="radio" value="0" {{#unless sex}}checked {{/unless}}/> 女
 </div>
 <div class="mui-input-row">
 	<label>出生年月：</label>
-	<input type="date" class="mui-input-clear" placeholder="" value="{{#if date}}{{date}}{{/if}}">
+	<input type="date" name="date" class="mui-input-clear" placeholder="" value="{{#if date}}{{date}}{{/if}}">
 </div>
 <div class="mui-input-row">
 	<label>是否农历：</label>
@@ -45,7 +51,7 @@
 		<div class="mui-switch-handle"></div>
 	</div>
 </div>
-<button class="mui-btn mui-btn-primary mui-btn-block" type="submit">{{#if _id}}修  改{{#else}}增 加{{/if}}</button>
+<button class="mui-btn mui-btn-primary mui-btn-block" type="submit">{{#if _id}}修  改{{else}}增 加{{/if}}</button>
 </script>
 <script>
 mui.init();
@@ -55,18 +61,35 @@ mui.plusReady(function() {
 	var self = plus.webview.currentWebview(),
 		tpl = Handlebars.compile($('#J_Tpl').html());
 		
+	detail = self.detail || {};
 	if (!detail._id) {
 		$('#J_Title').text('新增顾客');
 	}
-	detail = self.detail || {};
 	if (detail.date) {
 		detail.date = new Date(detail.date).format('yyyy/MM/dd');
 	}
 	
 	form.innerHTML = tpl(detail);
+	form.date.addEventListener('tap', function() {
+		var option = {
+			title: '请选择日期'
+		};
+		if (this.value) {
+			option.date = new Date(this.value);
+		}
+		plus.nativeUI.pickDate(function(e) {
+			form.date.value = e.date.format('yyyy/MM/dd');
+		}, null, option);
+	});
 });
-$(form).submit(function() {
+$(form).submit(function(e) {
 	var data = $(this).serializeObject();
+	e.preventDefault();
+	if (!data.name) {
+		return mui.alert('请输入用户名');
+	} else if (!data.mobile) {
+		return mui.alert('请输入顾客手机号码');
+	}
 	if (data.date) {
 		data.date = new Date(data.date).getTime();		
 	}
