@@ -22,15 +22,15 @@
 	</div>
 <script type="text/x-handlebars-template" id="J_Tpl">
 <div class="mui-input-row">
-	<label>顾客名称：</label>
+	<label>顾客名称</label>
 	<input type="text" name="name" class="mui-input-clear" required="" placeholder="必填" value="{{#if name}}{{name}}{{/if}}">
 </div>
 <div class="mui-input-row">
-	<label>电话号码：</label>
+	<label>电话号码</label>
 	<input type="tel" name="mobile" class="mui-input-clear" required="" placeholder="必填" value="{{#if mobile}}{{mobile}}{{/if}}">
 </div>
 <div class="mui-input-row">
-	<label>顾客编号：</label>
+	<label>顾客编号</label>
 	<input type="text" name="no" class="mui-input-clear" placeholder="用于线下数据做校对，选填" value="{{#if no}}{{no}}{{/if}}">
 </div>
 <div class="mui-input-row mui-radio">
@@ -42,11 +42,11 @@
 	<input name="sex" type="radio" value="0" {{#unless sex}}checked {{/unless}}/> 女
 </div>
 <div class="mui-input-row">
-	<label>出生年月：</label>
+	<label>出生年月</label>
 	<input type="date" name="date" class="mui-input-clear" placeholder="" value="{{#if date}}{{date}}{{/if}}">
 </div>
 <div class="mui-input-row">
-	<label>是否农历：</label>
+	<label>是否农历</label>
 	<div id="J_Lunar" class="mui-switch{{#if isLunar}} mui-active{{/if}}">
 		<div class="mui-switch-handle"></div>
 	</div>
@@ -94,7 +94,7 @@ $(form).submit(function(e) {
 		data.date = new Date(data.date).getTime();		
 	}
 	detail.isLunar = $('#J_Lunar').hasClass('mui-active');
-	mui.fire(plus.webview.getWebviewById('page/customerList.html'), 'Customer:update', mui.extend(detail, data));
+	mui.fire(plus.webview.getWebviewById("customerList.html"), 'Customer:update', mui.extend(detail, data));
 	plus.webview.currentWebview().close();
 });
 

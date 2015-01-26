@@ -10,13 +10,17 @@
     html { background: #333; }
     body { background: #333; color: #fff; text-align: center; }
 	.mui-icon-contact { font-size: 70px; line-height: 1.5; }
-	.logout { position: absolute; bottom: 15px; width: 100%;}
+	.setting { position: absolute; bottom: 15px; width: 100%; line-height: 30px;}
+	.setting>a { display: block; color: #fff;}
 	</style>
 </head>
 <body>
 	<h1 class="mui-icon mui-icon-contact"></h1>
 	<h3>匿名用户</h3>
-	<a id="J_Logout" class="logout">退出登录</a>
+	<div class="setting">
+		<a id="J_ChangePassword" href="#">修改密码</a>
+		<a id="J_Logout">退出登录</a>
+	</div>
 <script type="text/javascript" charset="utf-8">
 mui.plusReady(function() {
 	var user = T.getItemJSON(T.KEY_USER);
@@ -36,6 +40,9 @@ mui.plusReady(function() {
 	});
 	$('#J_Logout').tap(function() {
 		mui.fire(mui.currentWebview.opener(), 'logout');
+	});
+	$('#J_ChangePassword').tap(function() {
+		mui.openWindow('changePassword.html', 'changePassword.html');
 	});
 </script>
 </body>
