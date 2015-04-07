@@ -27,7 +27,7 @@ mui.plusReady(function() {
 		document.addEventListener('logined', function() {
 			// self.append(plus.webview.create(pages[1], pages[1]));
 			self.loadURL(pages[1]);
-			plus.webview.remove(pages[0]);
+			plus.webview.close(pages[0]);
 			document.removeEventListener('logined');
 		});
 	} else {

@@ -42,7 +42,7 @@ mui.plusReady(function() {
 		mui.fire(mui.currentWebview.opener(), 'logout');
 	});
 	$('#J_ChangePassword').tap(function() {
-		mui.openWindow('changePassword.html', 'changePassword.html');
+		mui.openWindow('changePassword.html', 'changePassword.html', { zIndex: 2 });
 	});
 </script>
 </body>
