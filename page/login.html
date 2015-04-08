@@ -67,6 +67,12 @@ mui.ready(function() {
 			});
 		}
 	});
+	$(form.mobile).on('input', function() {
+		if (this.value.length > 10) {
+			this.blur();
+			form.password.focus();
+		}
+	});
 });
 </script>
 </body>

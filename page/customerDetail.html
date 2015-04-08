@@ -24,14 +24,17 @@
 <div class="mui-input-row">
 	<label>顾客名称</label>
 	<input type="text" name="name" class="mui-input-clear" required="" placeholder="必填" value="{{#if name}}{{name}}{{/if}}">
+	<span class="mui-icon mui-icon-clear mui-hidden"></span>
 </div>
 <div class="mui-input-row">
 	<label>电话号码</label>
 	<input type="tel" name="mobile" class="mui-input-clear" required="" placeholder="必填" value="{{#if mobile}}{{mobile}}{{/if}}">
+	<span class="mui-icon mui-icon-clear mui-hidden"></span>
 </div>
 <div class="mui-input-row">
 	<label>顾客编号</label>
 	<input type="text" name="no" class="mui-input-clear" placeholder="用于线下数据做校对，选填" value="{{#if no}}{{no}}{{/if}}">
+	<span class="mui-icon mui-icon-clear mui-hidden"></span>
 </div>
 <div class="mui-input-row mui-radio">
 	<label>男</label>
@@ -43,7 +46,8 @@
 </div>
 <div class="mui-input-row">
 	<label>出生年月</label>
-	<input type="date" name="date" class="mui-input-clear" placeholder="" value="{{#if date}}{{date}}{{/if}}">
+	<input type="date" name="date" class="mui-input-clear" placeholder="点击选择" value="{{#if date}}{{date}}{{/if}}">
+	<span class="mui-icon mui-icon-clear mui-hidden"></span>
 </div>
 <div class="mui-input-row">
 	<label>是否农历</label>
@@ -51,7 +55,7 @@
 		<div class="mui-switch-handle"></div>
 	</div>
 </div>
-<button class="mui-btn mui-btn-primary mui-btn-block" type="submit">{{#if _id}}修  改{{else}}增 加{{/if}}</button>
+<div class="mui-content-padded"><button class="mui-btn mui-btn-primary mui-btn-block" type="submit">{{#if _id}}修  改{{else}}增 加{{/if}}</button></div>
 </script>
 <script>
 mui.init();
@@ -61,7 +65,9 @@ mui.plusReady(function() {
 	var self = plus.webview.currentWebview(),
 		tpl = Handlebars.compile($('#J_Tpl').html());
 		
-	detail = self.detail || {};
+	if (location.search.indexOf('?data=') === 0) {
+		detail = JSON.parse(decodeURIComponent(location.search.substring(6)));
+	}
 	if (!detail._id) {
 		$('#J_Title').text('新增顾客');
 	}
@@ -70,17 +76,17 @@ mui.plusReady(function() {
 	}
 	
 	form.innerHTML = tpl(detail);
-	form.date.addEventListener('tap', function() {
-		var option = {
-			title: '请选择日期'
-		};
-		if (this.value) {
-			option.date = new Date(this.value);
-		}
-		plus.nativeUI.pickDate(function(e) {
-			form.date.value = e.date.format('yyyy/MM/dd');
-		}, null, option);
-	});
+//	form.date.addEventListener('tap', function() {
+//		var option = {
+//			title: '请选择日期'
+//		};
+//		if (this.value) {
+//			option.date = new Date(this.value);
+//		}
+//		plus.nativeUI.pickDate(function(e) {
+//			form.date.value = e.date.format('yyyy/MM/dd');
+//		}, null, option);
+//	});
 });
 $(form).submit(function(e) {
 	var data = $(this).serializeObject();

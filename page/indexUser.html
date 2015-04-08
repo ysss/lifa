@@ -7,44 +7,28 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
     <link href="../css/mui.min.css" rel="stylesheet"/>
-    <script src="../js/mui.min.js"></script>
+    <style>
+    	.mui-icon-contact {font-size: 90px;}
+    	h3 {font-size:20px;}
+    	.user-info {padding: 1em 0;color:#333;text-align: center;}
+    	.mui-table-view {margin: 1em 0 3em 0;}
+    </style>
+    <script src="../js/mui.min.js" type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
 	<header class="mui-bar mui-bar-nav">
 		<h1 class="mui-title">个人中心</h1>
 	</header>
 	<div class="mui-content">
-		<form action="#" class="mui-input-group" name="loginForm">
-			<h4>您只有登录后才可以正常使用我们的服务。</h4>
-			<div class="mui-input-row">
-				<label for="Mobile">手机：</label>
-				<input capture="mui-input-clear" type="tel" name="mobile" id="Mobile" required="" placeholder="手机号码" maxlength="11" pattern="1\d{10}" />
-			</div>
-			<div class="mui-input-row">
-				<label for="Password">密码：</label>
-				<input class="mui-input-clear" type="password" name="password" id="Password" required="" placeholder="密码" maxlength="32" />
-			</div>
-			<button class="mui-btn mui-btn-primary mui-btn-block" type="submit">登 录</button>
-		</form>
+		<div class="user-info">
+			<h1 class="mui-icon mui-icon-contact"></h1>
+			<h3>匿名用户</h3>
+		</div>
+		<ul class="mui-table-view mui-table-view-chevron">
+			<li class="mui-table-view-cell"><a href="#" id="J_ChangePassword" class="mui-navigate-right">修改密码</a></li>
+		</ul>
+		<div class="mui-content-padded"><button id="J_Logout" class="mui-btn mui-btn-negative mui-btn-block mui-btn-outlined">退出登录</button></div>
 	</div>
-<script type="text/javascript" charset="utf-8">
-	mui.init();
-	$(document.forms.loginForm).submit(function(e) {
-		e.preventDefault();
-		var mobile = this.mobile.value.trim(),
-			password = this.password.value.trim();
-			
-		if (password.length < 6) {
-			return mui.alert('密码至少6位');
-		}
-		
-		T.post('/u/login', {
-			mobile: mobile,
-			password: password
-		}, function(data) {
-			T.setItemJSON(T.KEY_USER, data);
-		});
-	});
-</script>
+<script src="../js/page/indexUser.js" type="text/javascript" charset="utf-8"></script>
 </body>
 </html>

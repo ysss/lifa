@@ -17,7 +17,7 @@
 <script type="text/x-handlebars-template" id="J_Tpl">
 {{#each data}}
 <li class="mui-table-view-cell">
-	<a class="mui-navigate-right" href="customerDetail.html" data-id="{{_id}}">
+	<a class="mui-navigate-right" href="#" data-id="{{_id}}">
 		<span class="mui-badge mui-badge-success">{{no}}</span>
 		<h5 class="mui-pull-left">{{name}}</h5>
 		<strong class="mui-badge-primary">{{mobile}}</strong>
@@ -29,29 +29,15 @@
 (function(win) {
 var Page = {
 	container: '#J_ScrollWrapper',
-	page: 0,
-	STEP: 20,
 	sortData: {
 		sort: {
 			created: -1
 		}
 	},
 	attach: function() {
-		this.$list.tap('a', function() {
-			var url = 'page/customerDetail.html',
-				id = this.getAttribute('data-id');
-			mui.openWindow(url, {
-				styles: {
-					top: mui.HEIGHT_ZERO,
-					bottom: mui.HEIGHT_ZERO
-				},
-				params: {
-					id: id,
-					detail: Page.customers.filter(function(item) {
-						return item._id === id;
-					})[0]
-				}
-			});
+		this.$list.on('tap', 'a', function() {
+			var id = this.getAttribute('data-id');
+			mui.fire(mui.currentWebview.parent(), 'openDetail', Page.customers.filter(function(item) { return item._id === id; })[0]);
 			return false;
 		});
 		win.addEventListener('Customer:update', function(e) {
@@ -105,11 +91,7 @@ var Page = {
 	},
 	
 	append: function(data) {
-		var start = this.STEP * this.page;
-		if (!data) {
-			data = this.customers.slice(start, start + this.STEP);
-			this.page++;
-		}
+		data = data || this.customers || [];
 		if (data.length < 1) {
 			return;
 		}
@@ -152,14 +134,8 @@ var Page = {
 				down: {
 					callback: function() {
 						Page.refresh(function() {
-							mui(Page.container).pullRefresh().endPulldownToRefresh();							
+							mui(Page.container).pullRefresh().endPulldownToRefresh();
 						});
-					}
-				},
-				up: {
-					callback: function() {
-						Page.append();							
-						this.endPullupToRefresh(this.customers.length > Page.STEP * Page.page);
 					}
 				}
 			}
