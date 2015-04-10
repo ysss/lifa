@@ -79,9 +79,9 @@ var Page = {
 				Page.isSearch = false;
 				return;
 			} else if (/^\d+$/.test(word)) {
-				Page.append(Page.customers.filter(function(item) { return item.mobile.indexOf(word) > -1;}));
+				Page.append(Page.customers.filter(function(item) { return (item.mobile||'').indexOf(word) > -1;}));
 			} else {
-				Page.append(Page.customers.filter(function(item) { return item.name.indexOf(word) > -1;}));
+				Page.append(Page.customers.filter(function(item) { return (item.name||'').indexOf(word) > -1;}));
 			}
 		});
 		win.addEventListener("Customer:sync", function() {
@@ -120,6 +120,7 @@ var Page = {
 	},
 	
 	refresh: function(callback) {
+		var wait = plus.nativeUI.showWaiting('正在更新数据中...');
 		T.get('customer', {
 			content: $.extend({
 				query: {
@@ -129,12 +130,14 @@ var Page = {
 				}
 			}, Page.sortData)
 		}, function(data) {
+			wait.close();
 			if (data.length > 0) {
 				Page.customers = data.concat(Page.customers || []);
 				Page.$list.empty();
 				Page.append();
 				// update localstorage
 				T.setItemJSON(T.KEY_CUSTOMER, Page.customers);
+				mui.toast('更新成功~');
 			} else {
 				mui.alert(Page.customers && Page.customers.length ? '已经是最新的了' : '您还没有顾客数据，请先增加');
 			}
