@@ -4,23 +4,26 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
     <title></title>
-    <link href="../css/mui.min.css" rel="stylesheet"/>
     <script src="../js/mui.min.js"></script>
     <script src="../js/mui.tpl.min.js"></script>
+    <link href="../css/mui.min.css" rel="stylesheet"/>
+    <style type="text/css">
+    	.mui-pull-left{margin-right:6px;}
+    </style>
 </head>
 <body>
-	<div id="J_ScrollWrapper" class="mui-content mui-scroll-wrapper">
-		<div class="mui-scroll">
+	<!--<div id="J_ScrollWrapper" class="mui-content mui-scroll-wrapper">-->
+		<!--<div class="mui-scroll">-->
 			<ul id="J_List" class="mui-table-view mui-table-view-chevron"></ul>
-		</div>
-	</div>
+		<!--</div>-->
+	<!--</div>-->
 <script type="text/x-handlebars-template" id="J_Tpl">
 {{#each data}}
 <li class="mui-table-view-cell">
-	<a class="mui-navigate-right" href="#" data-id="{{_id}}">
-		<span class="mui-badge mui-badge-success">{{no}}</span>
-		<h5 class="mui-pull-left">{{name}}</h5>
-		<strong class="mui-badge-primary">{{mobile}}</strong>
+	<a class="mui-navigate-right" data-id="{{_id}}">
+		<span class="mui-badge mui-badge-success">编号: {{#if no}}{{no}}{{else}}无{{/if}}</span>
+		<strong class="mui-pull-left">{{name}}</strong>
+		<strong class="mui-text-danger">{{mobile}}</strong>
 	</a>
 </li>
 {{/each}}
@@ -35,7 +38,8 @@ var Page = {
 		}
 	},
 	attach: function() {
-		this.$list.on('tap', 'a', function() {
+		this.$list.on('tap', 'a', function(e) {
+			e.preventDefault();
 			var id = this.getAttribute('data-id');
 			mui.fire(mui.currentWebview.parent(), 'openDetail', Page.customers.filter(function(item) { return item._id === id; })[0]);
 			return false;
@@ -51,8 +55,7 @@ var Page = {
 			} else {
 				// update
 				delete data._id;
-				T.put('customer', {
-					id: id,
+				T.post('customer/' + id, {
 					content: data
 				}, function() {
 					mui.toast('更新成功');
@@ -64,22 +67,37 @@ var Page = {
 					}
 				});
 				
-				Page.$list.find('[data-id=' + id + ']').replaceWith(Page.tpl(data));
+				Page.$list.find('[data-id="' + id + '"]').parent().replaceWith(Page.tpl({data: [data]}));
 				T.setItemJSON(T.KEY_CUSTOMER, Page.customers);
 			}
+		});
+		win.addEventListener("Customer:search", function(e) {
+			var word = (e.detail.word || '').trim();
+			Page.isSearch = true;
+			if (!word) {
+				Page.append();
+				Page.isSearch = false;
+				return;
+			} else if (/^\d+$/.test(word)) {
+				Page.append(Page.customers.filter(function(item) { return item.mobile.indexOf(word) > -1;}));
+			} else {
+				Page.append(Page.customers.filter(function(item) { return item.name.indexOf(word) > -1;}));
+			}
+		});
+		win.addEventListener("Customer:sync", function() {
+			var waiting = plus.nativeUI.showWaiting("正在同步数据");
+			Page.refresh(function() {
+				waiting.close();
+			});
 		});
 	},
 	
 	ready: function() {
 		var customers = plus.storage.getItem(T.KEY_CUSTOMER);
 		if (!customers) {
-			T.get('customer', this.sortData, function(data) {
-				Page.customers = data;
-				if (data.length < 1) {
-					Page.$list.append('<li>您还没有顾客数据，请先增加</li>');
-				} else {
-					Page.append();
-				}
+			T.get('customer', {content: JSON.stringify(this.sortData) }, function(data) {
+				Page.customers = data || [];
+				Page.append();
 			});
 		} else {
 			if (!this.customers || this.customers.length === 0) {
@@ -91,8 +109,11 @@ var Page = {
 	},
 	
 	append: function(data) {
+		this.isSearch && this.$list.empty();
 		data = data || this.customers || [];
 		if (data.length < 1) {
+			this.$list.append('<p class="mui-text-center mui-text-warning" style="height: 60px; line-height: 60px;"><i class="mui-icon mui-icon-info"></i>'
+				+ (Page.isSearch ? '没有找到您查找的顾客' : '您还没有顾客数据，请点击右上角增加 ')+ '</p>');
 			return;
 		}
 		this.$list.append(this.tpl({data: data}));
@@ -100,10 +121,10 @@ var Page = {
 	
 	refresh: function(callback) {
 		T.get('customer', {
-			content: mui.extend({
+			content: $.extend({
 				query: {
 					created: {
-						$gt: Page.customers ? Page.customers[0].created || 0 : 0
+						$gt: Page.customers && Page.customers.length ? Page.customers[0].created || 0 : 0
 					}
 				}
 			}, Page.sortData)
@@ -128,21 +149,9 @@ var Page = {
 		
 		mui.plusReady(this.ready.bind(this));
 		
-		mui.init({
-			pullRefresh: {
-				container: this.container,
-				down: {
-					callback: function() {
-						Page.refresh(function() {
-							mui(Page.container).pullRefresh().endPulldownToRefresh();
-						});
-					}
-				}
-			}
-		});
+		mui.init();
 	}
 };
-
 Page.init();
 })(window);
 </script>

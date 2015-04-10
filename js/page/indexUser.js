@@ -10,6 +10,6 @@ $('#J_ChangePassword').tap(function() {
 	});
 });
 $('#J_Logout').tap(function() {
-	plus.storage.removeItem(T.KEY_SID);
+	plus.storage.clear();
 	plus.webview.getLaunchWebview().loadURL('../index.html');
 });

@@ -21,6 +21,19 @@ $('#J_Add').tap(function() {
 	});
 });
 
+$('#J_Refresh').tap(function(e) {
+	e.preventDefault();
+	mui.fire(plus.webview.getWebviewById('customerList.html'), 'Customer:sync');
+});
+
+$(document.forms.searchForm).submit(function(e) {
+	e.preventDefault();
+	mui.fire(plus.webview.getWebviewById('customerList.html'), 'Customer:search', {word:this.word.value.trim()});
+	return false;
+}).on('tap', '.mui-icon-clear', function() {
+	mui.fire(plus.webview.getWebviewById('customerList.html'), 'Customer:search', {word: ''});
+});
+
 window.addEventListener("openDetail", function(e) {
 	var data = e.detail;
 	mui.openWindow({

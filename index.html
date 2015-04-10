@@ -23,6 +23,15 @@ mui.plusReady(function() {
 	mui.os.android && plus.screen.lockOrientation("portrait-primary");
 
 	if (!isLogin) {
+		doLogin();
+	} else {
+		T.post('u/isLogin', function() {
+			self.loadURL(page);
+		}, function() {
+			doLogin();
+		});
+	}
+	function doLogin() {
 		self.append(plus.webview.create(page, page));
 		document.addEventListener('logined', function() {
 			// self.append(plus.webview.create(pages[1], pages[1]));
@@ -30,8 +39,6 @@ mui.plusReady(function() {
 			plus.webview.close(pages[0]);
 			document.removeEventListener('logined');
 		});
-	} else {
-		self.loadURL(page);
 	}
 });
 </script>

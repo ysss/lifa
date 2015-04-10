@@ -6,6 +6,7 @@
     <title></title>
     <script src="../js/mui.min.js"></script>
     <script src="../js/mui.tpl.min.js"></script>
+    <script src="../js/pinyin.js" type="text/javascript" charset="utf-8"></script>
     <link href="../css/mui.min.css" rel="stylesheet"/>
     <style>
     	button[type=submit]{margin-top: 20px;}
@@ -33,16 +34,16 @@
 </div>
 <div class="mui-input-row">
 	<label>顾客编号</label>
-	<input type="text" name="no" class="mui-input-clear" placeholder="用于线下数据做校对，选填" value="{{#if no}}{{no}}{{/if}}">
+	<input type="number" name="no" class="mui-input-clear" placeholder="用于线下数据做校对，选填" value="{{#if no}}{{no}}{{/if}}">
 	<span class="mui-icon mui-icon-clear mui-hidden"></span>
 </div>
 <div class="mui-input-row mui-radio">
 	<label>男</label>
-	<input name="sex" type="radio" value="1" {{#if sex}}checked {{/if}}/> 男
+	<input name="sex" type="radio" data-value-type="number" value="1" {{#if sex}}checked {{/if}}/> 男
 </div>
 <div class="mui-input-row mui-radio">
 	<label>女</label>
-	<input name="sex" type="radio" value="0" {{#unless sex}}checked {{/unless}}/> 女
+	<input name="sex" type="radio" data-value-type="number" value="0" {{#unless sex}}checked {{/unless}}/> 女
 </div>
 <div class="mui-input-row">
 	<label>出生年月</label>
@@ -60,7 +61,7 @@
 <script>
 mui.init();
 (function(form) {
-	var detail;
+	var detail = {};
 mui.plusReady(function() {
 	var self = plus.webview.currentWebview(),
 		tpl = Handlebars.compile($('#J_Tpl').html());
@@ -99,6 +100,7 @@ $(form).submit(function(e) {
 	if (data.date) {
 		data.date = new Date(data.date).getTime();		
 	}
+	detail.pinyin = Pinyin(data.name, true, '');
 	detail.isLunar = $('#J_Lunar').hasClass('mui-active');
 	mui.fire(plus.webview.getWebviewById("customerList.html"), 'Customer:update', mui.extend(detail, data));
 	plus.webview.currentWebview().close();
