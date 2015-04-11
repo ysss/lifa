@@ -13,10 +13,24 @@
 		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 		<h1 class="mui-title"></h1>
 	</header>
-	<div class="mui-content">
-	</div>
 <script>
-	mui.init();
+var url = T.getParam('url');
+if (url) {
+	if (url.indexOf('http://') !== 0 && url.indexOf('http:/') === 0) {
+		url = url.replace('http:/', 'http://');
+	}
+	mui.init({
+		subpages: [{
+			url: url,
+			id: url,
+			styles: {
+				top: mui.HEIGHT_HEADER,
+				bottom: mui.HEIGHT_ZERO
+			}
+		}]
+	});
+}
+$('h1').text(T.getParam('title') || '页面');
 </script>
 </body>
 </html>

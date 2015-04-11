@@ -1,7 +1,7 @@
 {
     "@platforms": ["android", "iPhone", "iPad"],
     "id": "H5F54060B",/*应用的标识，创建应用时自动生成，勿手动修改*/
-    "name": "lifa",/*应用名称，程序桌面图标名称*/
+    "name": "理发店长",/*应用名称，程序桌面图标名称*/
     "version": {
         "name": "1.0.0",/*应用版本名称*/
         "code": "83"
@@ -12,9 +12,9 @@
     },
     "launch_path": "index.html",/*应用的入口页面，默认为根目录下的index.html；支持网络地址，必须以http://或https://开头*/
     "developer": {
-        "name": "",/*开发者名称*/
-        "email": "",/*开发者邮箱地址*/
-        "url": "http://www.dcloud.io"/*开发者个人主页地址*/
+        "name": "yansong",/*开发者名称*/
+        "email": "yansong1989@qq.com",/*开发者邮箱地址*/
+        "url": "http://lifa.chengsekongjian.com"/*开发者个人主页地址*/
     },
     "permissions": {
         "Accelerometer": {
@@ -164,11 +164,11 @@
                     }
                 },
                 "android": {
-                    "mdpi": "", /*普通屏程序图标，分辨率：48x48*/
-                    "ldpi": "", /*大屏程序图标，分辨率：48x48*/
-                    "hdpi": "", /*高分屏程序图标，分辨率：72x72*/
-                    "xhdpi": "",/*720P高分屏程序图标，分辨率：96x96*/
-                    "xxhdpi": ""/*1080P 高分屏程序图标，分辨率：144x144*/
+                    "mdpi": "C:\\Users\\ximing\\Downloads\\app\\logo\\96.png", /*普通屏程序图标，分辨率：48x48*/
+                    "ldpi": "C:\\Users\\ximing\\Downloads\\app\\logo\\48.png", /*大屏程序图标，分辨率：48x48*/
+                    "hdpi": "C:\\Users\\ximing\\Downloads\\app\\logo\\72.png", /*高分屏程序图标，分辨率：72x72*/
+                    "xhdpi": "C:\\Users\\ximing\\Downloads\\app\\logo\\96.png",/*720P高分屏程序图标，分辨率：96x96*/
+                    "xxhdpi": "C:\\Users\\ximing\\Downloads\\app\\logo\\144.png"/*1080P 高分屏程序图标，分辨率：144x144*/
                 }
             },
             "splashscreen": {
@@ -193,7 +193,7 @@
                     "mdpi": "", /*普通屏启动图片，分辨率：240x282*/
                     "ldpi": "", /*大屏启动图片，分辨率：320x442*/
                     "hdpi": "", /*高分屏启动图片，分辨率：480x762*/
-                    "xhdpi": "", /*720P高分屏启动图片，分辨率：720x1242*/
+                    "xhdpi": "C:\\Users\\ximing\\Downloads\\app\\startup.png", /*720P高分屏启动图片，分辨率：720x1242*/
                     "xxhdpi": ""/*1080P高分屏启动图片，分辨率：1080x1882*/
                 }
             }
