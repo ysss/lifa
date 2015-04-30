@@ -15,6 +15,7 @@
 </head>
 <body>
 <ul id="J_List" class="mui-table-view mui-table-view-chevron"></ul>
+<p class="mui-text-center mui-hidden" style="margin:6px 0" id="J_LoadMore">点击加载更多</p>
 <script type="text/x-handlebars-template" id="J_Tpl">
 {{#each data}}
 <li class="mui-table-view-cell">
@@ -28,6 +29,7 @@
 </script>
 <script>
 (function(win) {
+	var $win = $(win);
 var Page = {
 	container: '#J_ScrollWrapper',
 	sortData: {
@@ -35,6 +37,55 @@ var Page = {
 			created: -1
 		}
 	},
+	 /**
+     * 当滚动到某个节点时，执行对应的回调函数
+     *
+     * @param {Selector||jQuery}$nd
+     * @param {Function} callback
+     * @param {Any} context
+     */
+    showByScroll: function($nd, callback, context) {
+        $nd = $($nd);
+        var fn = function() {
+            if (Page.isOverlap($nd)) {
+                //$win.off('scroll', fn);
+                if (callback) {
+                    if (context) {
+                        callback.call(context, $nd);
+                    } else {
+                        callback($nd);
+                    }
+                }
+            }
+        };
+        $win.scroll(fn);
+//      fn();
+    },
+	 /**
+     * 盒子重叠，只算垂直方向
+     * @param {jQuery} $nd
+     * @param {Number} [minBoundary]
+     * @param {Number} [maxBoundary]
+     * @returns {boolean}
+     */
+    isOverlap: function($nd, minBoundary, maxBoundary){
+        minBoundary = minBoundary || $win.scrollTop();
+        maxBoundary = maxBoundary || (minBoundary + $win.height());
+        var offset = $nd.offset(),
+            boxMinBoundary = offset.top,
+            boxMaxBoundary = boxMinBoundary + (offset.height || $nd[0].height || 40);
+
+        if (boxMinBoundary > 0 && boxMaxBoundary > 0) {
+            // 盒子垂直相交概念
+            if ((boxMinBoundary > minBoundary && boxMinBoundary < maxBoundary)
+                || (boxMaxBoundary > minBoundary && boxMaxBoundary < maxBoundary)) {
+                return true;
+            }
+        }
+        return false;
+    },
+	page: 0,
+	step: 20,
 	attach: function() {
 		this.$list.on('tap', 'a', function(e) {
 			e.preventDefault();
@@ -88,6 +139,12 @@ var Page = {
 				waiting.close();
 			});
 		});
+		this.showByScroll(this.$loadMore, function() {
+			Page.$loadMore.hasClass('mui-hidden') || Page.append();
+		});
+		this.$loadMore.tap(function() {
+			Page.append();
+		});
 	},
 	
 	ready: function() {
@@ -127,11 +184,23 @@ var Page = {
 	},
 	
 	append: function(data) {
+		this.$loadMore.addClass('mui-hidden');
 		this.isSearch && this.$list.empty();
-		data = data || this.customers || [];
+		if (!data) {
+			if (this.customers && this.customers.length > 1) {
+				data = this.customers.slice(this.page * this.step, ++this.page * this.step);
+				if (this.customers.length > this.page * this.step) {
+					this.$loadMore.removeClass('mui-hidden');
+				}
+			} else {
+				data = [];
+			}
+		} else {
+			this.page = 0;
+		}
 		if (data.length < 1) {
 			this.$list.append('<p class="mui-text-center mui-text-warning" style="height: 60px; line-height: 60px;"><i class="mui-icon mui-icon-info"></i>'
-				+ (Page.isSearch ? '没有找到您查找的顾客' : '您还没有顾客数据，请点击右上角增加 ')+ '</p>');
+				+ (Page.isSearch ? '没有找到您要查找的顾客' : '您还没有顾客数据，请点击右上角增加 ')+ '</p>');
 			return;
 		}
 		this.$list.append(this.tpl({data: data}));
@@ -152,6 +221,7 @@ var Page = {
 			if (data.length > 0) {
 				Page.customers = data.concat(Page.customers || []);
 				Page.$list.empty();
+				Page.page = 0;
 				Page.append();
 				// update localstorage
 				T.setItemJSON(T.KEY_CUSTOMER, Page.customers);
@@ -166,6 +236,7 @@ var Page = {
 	
 	init: function() {
 		this.$list = $('#J_List');
+		this.$loadMore = $('#J_LoadMore');
 		this.tpl = Handlebars.compile($('#J_Tpl').html());
 		this.attach();
 		
