@@ -17,6 +17,7 @@
 	<header class="mui-bar mui-bar-nav">
 		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 		<h1 id="J_Title" class="mui-title">顾客详情</h1>
+		<a class="mui-btn mui-btn-negative mui-hidden">删除</a>
 	</header>
 	<div class="mui-content">
 		<form name="customerForm" class="mui-input-group">
@@ -72,6 +73,16 @@ mui.plusReady(function() {
 	}
 	if (!detail._id) {
 		$('#J_Title').text('新增顾客');
+	} else {
+		$('#J_Delete').removeClass('mui-hidden').tap(function() {
+			mui.confirm("您确定要删除这条顾客信息？", '删除提示', ["确定", "取消"], function(e) {
+				if (e.index == 0) {
+					T.post('customer/delete/' + detail._id, function() {
+						
+					});
+				}
+			});
+		});
 	}
 	if (detail.date) {
 		detail.date = new Date(detail.date).format('yyyy/MM/dd');
