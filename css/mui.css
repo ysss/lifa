@@ -1,6 +1,6 @@
 /*!
  * =====================================================
- * Mui v1.5.0 (https://github.com/dcloudio/mui)
+ * Mui v1.6.0 (https://github.com/dcloudio/mui)
  * =====================================================
  */
 
@@ -404,6 +404,10 @@ a:active {
   margin: 88px 35px;
   background-color: #bbb;
   border-radius: 6px;
+}
+
+.mui-subtitle {
+  font-size: 15px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -1465,6 +1469,23 @@ input[type="submit"]:enabled:active, input[type="submit"].mui-active:enabled,
   margin-right: -65px;
 }
 
+.mui-table-view-radio .mui-table-view-cell {
+  padding-right: 65px;
+}
+.mui-table-view-radio .mui-table-view-cell > a:not(.mui-btn) {
+  margin-right: -65px;
+}
+.mui-table-view-radio .mui-table-view-cell .mui-navigate-right:after {
+  right: 9px;
+  font-size: 30px;
+  font-weight: 600;
+  color: #007aff;
+  content: '';
+}
+.mui-table-view-radio .mui-table-view-cell.mui-selected .mui-navigate-right:after {
+  content: '\e472';
+}
+
 .mui-table-view-inverted {
   color: #fff;
   background: #333;
@@ -1564,8 +1585,15 @@ input[type="submit"]:enabled:active, input[type="submit"].mui-active:enabled,
   -webkit-transition: -webkit-transform 300ms ease;
           transition:         transform 300ms ease;
 }
+.mui-table-view-cell.mui-active > .mui-slider-handle {
+  background-color: #eee;
+}
 .mui-table-view-cell > .mui-slider-handle {
+  position: relative;
   background-color: #fff;
+}
+.mui-table-view-cell > .mui-slider-handle.mui-navigate-right:after, .mui-table-view-cell > .mui-slider-handle .mui-navigate-right:after {
+  right: 0;
 }
 .mui-table-view-cell > .mui-slider-handle, .mui-table-view-cell > .mui-slider-left .mui-btn, .mui-table-view-cell > .mui-slider-right .mui-btn {
   -webkit-transition: -webkit-transform 0ms ease;
@@ -1670,6 +1698,14 @@ input[type="submit"]:enabled:active, input[type="submit"].mui-active:enabled,
   overflow: hidden;
 }
 
+.mui-table-view .mui-media-large .mui-media-object {
+  max-width: 80px;
+  height: 80px;
+  line-height: 80px;
+}
+.mui-table-view .mui-media .mui-subtitle {
+  color: #000;
+}
 .mui-table-view .mui-media-object {
   max-width: 42px;
   height: 42px;
@@ -1966,7 +2002,9 @@ input[type="color"] {
   outline: none;
 }
 
+input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
   margin: 0;
 }
 
@@ -2202,12 +2240,15 @@ select:focus {
   border: 0;
   outline: 0 !important;
 }
+.mui-radio input[type="radio"][disabled]:before, .mui-checkbox input[type="checkbox"][disabled]:before {
+  opacity: .3;
+}
 .mui-radio input[type="radio"]:before, .mui-checkbox input[type="checkbox"]:before {
   font-family: Muiicons;
   font-size: 28px;
   font-weight: normal;
   line-height: 1;
-  color: rgba(170, 170, 170, .6);
+  color: #aaa;
   text-decoration: none;
   background: none;
   border-radius: 0;
@@ -2216,6 +2257,10 @@ select:focus {
 }
 .mui-radio input[type="radio"]:checked:before, .mui-checkbox input[type="checkbox"]:checked:before {
   color: #007aff;
+}
+
+.mui-radio.mui-disabled label, .mui-radio label.mui-disabled, .mui-checkbox.mui-disabled label, .mui-checkbox label.mui-disabled {
+  opacity: .4;
 }
 
 .mui-radio input[type="radio"]:before {
@@ -3192,6 +3237,71 @@ select:focus {
   border-radius: 7px;
 }
 
+.mui-numbox {
+  position: relative;
+  display: inline-block;
+  width: 120px;
+  height: 35px;
+  padding: 0 40px 0 40px;
+  overflow: hidden;
+  vertical-align: top;
+  vertical-align: middle;
+  background-color: #efeff4;
+  border: solid 1px #bbb;
+  border-radius: 3px;
+}
+.mui-numbox [class*=mui-numbox-btn] {
+  position: absolute;
+  top: 0;
+  width: 40px;
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+  font-size: 18px;
+  font-weight: normal;
+  line-height: 100%;
+  color: #555;
+  background-color: #f9f9f9;
+  border: none;
+  border-radius: 0;
+}
+.mui-numbox [class*=mui-numbox-btn]:active {
+  background-color: #ccc;
+}
+.mui-numbox [class*=mui-numbox-btn][disabled] {
+  color: #c0c0c0;
+}
+.mui-numbox .mui-numbox-btn-plus {
+  right: 0;
+  border-top-right-radius: 3px;
+  border-bottom-right-radius: 3px;
+}
+.mui-numbox .mui-numbox-btn-minus {
+  left: 0;
+  border-top-left-radius: 3px;
+  border-bottom-left-radius: 3px;
+}
+.mui-numbox .mui-numbox-input {
+  display: inline-block;
+  width: 100% !important;
+  height: 100%;
+  padding: 0 3px !important;
+  margin: 0;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  word-break: normal;
+  border: none !important;
+  border-right: solid 1px #ccc !important;
+  border-left: solid 1px #ccc !important;
+  border-radius: 0 !important;
+}
+
+.mui-input-row .mui-numbox {
+  float: right;
+  margin: 2px 8px;
+}
+
 @font-face {
   font-family: Muiicons;
   font-style: normal;
@@ -3579,6 +3689,11 @@ select:focus {
   -webkit-transform: translateY(-50%);
           transform: translateY(-50%);
 }
+.mui-fullscreen .mui-off-canvas-wrap .mui-slider-item > a {
+  top: auto;
+  -webkit-transform: none;
+          transform: none;
+}
 
 .mui-bar-tab ~ .mui-content .mui-slider.mui-fullscreen .mui-segmented-control ~ .mui-slider-group {
   bottom: 50px;
@@ -3587,4 +3702,9 @@ select:focus {
 .mui-android.mui-android-4-0 input:focus,
 .mui-android.mui-android-4-0 textarea:focus {
   -webkit-user-modify: inherit;
+}
+
+.mui-ios .mui-table-view-cell {
+  -webkit-transform-style: preserve-3d;
+          transform-style: preserve-3d;
 }

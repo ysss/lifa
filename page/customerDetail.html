@@ -17,7 +17,7 @@
 	<header class="mui-bar mui-bar-nav">
 		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
 		<h1 id="J_Title" class="mui-title">顾客详情</h1>
-		<a class="mui-btn mui-btn-negative mui-hidden">删除</a>
+		<a id="J_Delete" class="mui-btn mui-btn-negative mui-hidden mui-pull-right">删除</a>
 	</header>
 	<div class="mui-content">
 		<form name="customerForm" class="mui-input-group">
@@ -36,7 +36,7 @@
 </div>
 <div class="mui-input-row">
 	<label>顾客编号</label>
-	<input type="number" name="no" class="mui-input-clear" placeholder="用于线下数据做校对，选填" value="{{#if no}}{{no}}{{/if}}">
+	<input type="number" name="no" class="mui-input-clear" placeholder="用于线下数据校对，选填" value="{{#if no}}{{no}}{{/if}}">
 	<span class="mui-icon mui-icon-clear mui-hidden"></span>
 </div>
 <div class="mui-input-row mui-radio">
@@ -58,7 +58,7 @@
 		<div class="mui-switch-handle"></div>
 	</div>
 </div>
-<div class="mui-content-padded"><button class="mui-btn mui-btn-primary mui-btn-block" type="submit">{{#if _id}}修  改{{else}}增 加{{/if}}</button></div>
+<div class="mui-content-padded"><button class="mui-btn mui-btn-primary mui-btn-block" type="submit">确认并{{#if _id}}修  改{{else}}增 加{{/if}}</button></div>
 </script>
 <script>
 mui.init();
@@ -78,7 +78,8 @@ mui.plusReady(function() {
 			mui.confirm("您确定要删除这条顾客信息？", '删除提示', ["确定", "取消"], function(e) {
 				if (e.index == 0) {
 					T.post('customer/delete/' + detail._id, function() {
-						
+						mui.fire(plus.webview.getWebviewById("customerList.html"), 'Customer:delete', {id: detail._id});
+						plus.webview.currentWebview().close();
 					});
 				}
 			});

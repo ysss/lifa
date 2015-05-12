@@ -120,6 +120,17 @@ var Page = {
 				T.setItemJSON(T.KEY_CUSTOMER, Page.customers);
 			}
 		});
+		win.addEventListener('Customer:delete', function(e) {
+			var data = e.detail,
+				id = data.id;
+			if (id) {
+				Page.customers = Page.customers.filter(function(item) {
+					return item._id !== id;
+				});
+				Page.$list.find('[data-id="' + id + '"]').parent().remove();
+				T.setItemJSON(T.KEY_CUSTOMER, Page.customers);
+			}
+		});
 		win.addEventListener("Customer:search", function(e) {
 			var word = (e.detail.word || '').trim();
 			Page.isSearch = true;
