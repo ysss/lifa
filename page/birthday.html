@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" /><meta name="format-detection" content="telephone=no"/>
+    <meta name="format-detection" content="address=no"/>
+    <title>生日会员</title>
+    <script src="../js/mui.min.js"></script>
+    <script src="../js/mui.tpl.min.js"></script>
+    <link href="../css/mui.min.css" rel="stylesheet"/>
+</head>
+<body>
+	<header class="mui-bar mui-bar-nav">
+		<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		<h1 class="mui-title">生日会员</h1>
+	</header>
+	<div class="mui-content">
+		<ul class="mui-table-view"></ul>
+	</div>
+<script type="text/x-handlebars-template" id="J_Tpl">
+{{#each data}}
+<li class="mui-table-view-cell">
+	<a class="mui-navigate-right" data-id="{{_id}}">
+		<span class="mui-badge mui-badge-success">编号: {{#if no}}{{no}}{{else}}无{{/if}}</span>
+		<strong class="mui-pull-left">{{name}}</strong>
+		<strong class="mui-text-danger">{{mobile}}</strong>
+	</a>
+</li>
+{{/each}}
+</script>
+<script src="../js/chinese-lunar.js"></script>
+<script>
+mui.plusReady(function() {
+	var tpl = Handlebars.compile($('#J_Tpl').html());
+		today = new Date(),
+		lunar = chineseLunar.solarToLunar(today);
+	today = {
+		month: today.getMonth(),
+		day: today.getDay()
+	};
+	var customers = T.getItemJSON(T.KEY_CUSTOMER);
+	$('.mui-table-view').html(tpl({
+		data: customers.filter(function(item) {
+			var date = new Date(item.date),
+				time = item.isLunar ? lunar : today;
+				
+			return date.month === time.month && date.day === time.day;
+		});
+	}));
+});
+	mui.init();
+</script>
+</body>
+</html>
